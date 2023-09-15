@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>reveal.js</title>
+    <link rel="stylesheet" href="dist/reset.css" />
+    <link rel="stylesheet" href="dist/reveal.css" />
+    <link rel="stylesheet" href="dist/csshake.min.css" />
+    <link rel="stylesheet" href="css/animate.min.css">
+    <link rel="stylesheet" href="dist/theme/white.css" />
+    <link
+      rel="preload"
+      href="./dist/theme/fonts/work/subset-YanoneKaffeesatz-ExtraLight.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" />
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>
+            Еще один подход к SSR
+          </h1>
+        </section>
+                <section>
+          <table>
+            <tr>
+              <td style="vertical-align: middle">
+                <img style="height: 8em" src="img/logo.jpg" alt="">
+              </td>
+              <td style="vertical-align: middle">
+                Золотых Алексей
+                <br>
+                  @zolotyh
+                <br>
+                  Github | Telegram | Twitter
+              </td>
+            </tr>
+          </table>
+        </section>
+        <section>
+          <img style="height: 10em;" src="./img/logo.svg" alt="Лого МойОфис">
+        </section>
+        <section>
+          <img src="./img/holyjs.svg" alt="HolyJS">
+        </section>
+        <section>
+          <h2>Тяжелое утро c HolyJS</h2>
+          <img src="./img/podcast.jpeg" alt="Podcast Тяжелое утро HolyJS">
+        </section>
+        <section>
+          Почему появился этот доклад?
+        </section>
+        <section data-background-video="./video/1.mp4"></section>
+        <section data-background="#0f0f0f">
+          <h2>
+            1. Когда все пошло не туда
+          </h2>
+        </section>
+        <section data-transition="none">
+          <h2>
+            Проблема
+          </h2>
+          <pre><code data-trim>
+document
+  .querySelector('.button')
+  .addEventlistener('click', () =&gt; ...);
+
+document
+  .innerHTML = &#39;&lt;button class=&quot;button&quot;&gt;&lt;/button&gt;&#39;
+          </code></pre>
+          <p>&nbsp;</p>
+        </section>
+        <section data-transition="none">
+          <h2>
+            Проблема
+          </h2>
+          <pre><code data-trim>
+document
+  .innerHTML = &#39;&lt;button class=&quot;button&quot;&gt;&lt;/button&gt;&#39;
+
+document // теперь выполнится
+  .querySelector('.button')
+  .addEventlistener('click', () =&gt; ...); 
+          </code></pre>
+          <p class="fragment">Это работает императивно, потому что DOM императивен</p>
+        </section>
+        <section>
+          <ul>
+            <li>Обновить HTML</li>
+            <li>Перенавесить события</li>
+          </ul>
+        </section>
+        <section>
+          <h2>И тут появляется state</h2>
+          <ul>
+            <li class="fragment">Резделяем данные и шаблоны</li>
+            <li class="fragment">Меняются данные, рендерим шаблон, перенавешиваем события</li>
+          </ul>
+        </section>
+        <section>
+          <h2>
+            JSON
+          </h2>
+          <p>Давайте передавать не верстку, а данные</p>
+        </section>
+        <section data-transition="none">
+          <p>
+            Мы работаем с деревьями
+          </p>
+          <img src="./img/page1.svg" alt="">
+        </section>
+        <section data-transition="none">
+          <pre data-trim>
+.
+├── footer
+├── header
+├── left-sidebar
+└── main
+          </pre>
+        </section>
+        <section data-transition="none">
+          <pre>
+.
+├── footer
+├── header
+├── left-sidebar
+│   └── navigation
+└── main
+    └── product-table
+          </pre>
+        </section>
+        <section data-transition="none">
+          <pre>
+.
+├── footer
+├── header
+├── left-sidebar
+│   └── navigation
+│       ├── item1
+│       ├── item2
+│       └── item3
+└── main
+    └── product-table
+        ├── tr1
+        ├── tr2
+        └── tr3
+          </pre>
+        </section>
+        <section data-transition="none">
+          <pre>
+.
+├── footer
+├── header
+├── left-sidebar
+│   └── navigation
+│       ├── item1
+│       ├── item2
+        └── <mark>item3</mark>
+└── main
+    └── product-table
+        ├── tr1
+        ├── tr2
+        └── tr3
+          </pre>
+        </section>
+        <section>
+          <h2>И мы изобретаем &laquo;React&raquo;</h2>
+        </section>
+        <section>
+          <img src="./img/virtualdom.png" alt="">
+        </section>
+        <section>
+          <p>
+            Мы наконец-то получаем декларативность
+          </p>
+          <pre><code data-trim class="jsx javascript">
+const C = ({onClick}) =&gt; (&lt;div&gt;
+  &lt;p onClick={onClick}&gt;Hello World&lt;/p&gt;
+&lt;/div&gt);
+          </code></pre>
+        </section>
+        <section data-background="#0f0f0f">
+          <h2>
+            2. Что не так?!
+          </h2>
+        </section>
+        <section>
+          <table>
+            <tr>
+              <td></td>
+              <td>JS</td>
+              <td>HTML</td>
+            </tr>
+            <tr class="fragment" style="font-size: 0.7">
+              <th>Инфо/байт</th>
+              <td>Hello world</td>
+              <td>600 страниц</td>
+            </tr>
+            <tr class="fragment" style="font-size: 0.7">
+              <th>Память</th>
+              <td>98mb</td>
+              <td>29mb</td>
+            </tr>
+            <tr class="fragment" style="font-size: 0.7">
+              <th>LCP <span style="font-size: 0.5">Largest Contentful Paint</span></th>
+              <td>180ms</td>
+              <td>90ms</td>
+            </tr>
+          </table>
+          <p class="fragment">А если грузить весь SPA?</p>
+        </section>
+        <section>
+          <h2>
+            Easy vs Simple
+          </h2>
+          <p class="fragment">React easy and complicated</p>
+        </section>
+        <section data-transition="none">
+          <h2>Сборка</h2>
+          <h2 style="opacity: 0;">Ад</h2>
+        </section>
+        <section data-transition="none">
+          <h2><strike>Сборка</strike></h2>
+          <h2>Ад</h2>
+        </section>
+        <section>
+          <h2>Несколько источников правды</h2>
+          <ul>
+            <li class="fragment">Сервер</li>
+            <li class="fragment">Стейт</li>
+            <li class="fragment">DOM</li>
+          </ul>
+        </section>
+        <section data-background="#0f0f0f">
+          <h2>
+            3. HTML fist подход
+          </h2>
+        </section>
+        <section>
+          <p>
+            Суть
+          </p>
+          <ul>
+            <li class="fragment">Данные передаем сразу в HTML</li>
+            <li class="fragment">Есть только локальный стейт</li>
+            <li class="fragment">Все обновления тоже HTML</li>
+            <li class="fragment">Минимум JS</li>
+          </ul>
+        </section>
+        <section>
+          <p>
+            Берем старый фреймворк где c любимыми шаблонами
+          </p>
+          <div class="r-stack">
+            <img class="fragment" src="./img/f5.png" >
+            <img class="fragment" src="./img/f4.png" >
+            <img class="fragment" src="./img/f3.png" >
+            <img class="fragment" src="./img/f2.png" >
+            <img class="fragment" src="./img/f1.png" >
+          </div>
+        </section>
+        <section>
+          <img src="./img/html.png" alt="">
+        </section>
+        <section>
+          <p>
+            Оптимизируем
+          </p>
+          <ol>
+            <li class="fragment">Запретим переходить по ссылкам и отправлять формы</li>
+            <li class="fragment">Шаманим над HistoryAPI</li>
+            <li class="fragment">Запрашиваем станицу fetch (метод можно взять из формы или аттрибута)</li>
+            <li class="fragment">Отобразим HTML-код ответа, заменив текущий элемент &lt;body&gt; и объединив содержимое элемента &lt;head&gt;</li>
+          </ol>
+        </section>
+        <section data-background="#0f0f0f">
+          <h2  >
+            DEMO 1
+          </h2>
+        </section>
+        <section>
+          Turbo Drive
+        </section>
+        <section>
+          <p>
+            &mdash; А если нам нужно только часть страницы?
+          </p>
+          <p class="fragment">&mdash; Эмулируем iframe!</p>
+        </section>
+        <section data-transition="none">
+          <p>
+            Синтаксис
+          </p>
+          <pre><code data-trim class="html">
+&lt;turbo-frame id=&quot;messages&quot;&gt;
+  &lt;a href=&quot;/messages/expanded&quot;&gt;
+    Show all expanded messages in this frame.
+  &lt;/a&gt;
+
+  &lt;form action=&quot;/messages&quot;&gt;
+    Show response from this form within this frame.
+  &lt;/form&gt;
+&lt;/turbo-frame&gt;
+          </code></pre>
+        </section>
+        <section data-transition="none">
+          <p>
+            Отложенная загрузка
+          </p>
+          <pre><code data-trim class="html">
+&lt;turbo-frame id=&quot;messages&quot  src=&quot;/messages&quot; &gt;
+  Content will be replaced when the frame becomes visible and /messages has been loaded.
+&lt;/turbo-frame&gt;
+          </code></pre>
+        </section>
+        <section data-transition="none">
+          <p>
+            Ленивая загрузка
+          </p>
+          <pre><code data-trim class="html">
+&lt;turbo-frame id=&quot;messages&quot loading=&quot;lazy&quot; src=&quot;/messages&quot; &gt;
+  Content will be replaced when the frame becomes visible and /messages has been loaded.
+&lt;/turbo-frame&gt;
+          </code></pre>
+        </section>
+        <section data-background="#0f0f0f">
+          <h2  >
+            DEMO 2
+          </h2>
+        </section>
+        <section>
+          Turbo Frame
+        </section>
+        <section>
+          Можно еще динамичнее?
+          <pre class="fragment"><code class="html" data-trim>
+&lt;turbo-stream action=&quot;append&quot; target=&quot;dom_id&quot;&gt;
+  &lt;template&gt;
+    Content to append to container designated with the dom_id.
+  &lt;/template&gt;
+&lt;/turbo-stream&gt;
+          </code></pre>
+          <p class="fragment">Websocket, HTML Turbo frame request</p>
+        </section>
+        <section>
+          <p>
+            <a href="https://turbo.hotwired.dev/">turbo.hotwired.dev</a>
+          </p>
+          <img src="./img/turbo.png" alt="">
+        </section>
+        <section>
+          А что если мне все еще нужен JS?
+        </section>
+        <section>
+          <p>
+            <a href="https://stimulus.hotwired.dev/">stimulus.hotwired.dev</a>
+          </p>
+          <img src="./img/stimulus.png" alt="скриншот стимулус">
+        </section>
+        <section>
+          <h2>
+            HTML
+          </h2>
+          <pre><code data-trim class="html">
+&lt;!--HTML from anywhere--&gt;
+&lt;div data-controller=&quot;hello&quot;&gt;
+  &lt;input data-hello-target=&quot;name&quot; type=&quot;text&quot;&gt;
+
+  &lt;button data-action=&quot;click-&gt;hello#greet&quot;&gt;
+    Greet
+  &lt;/button&gt;
+
+  &lt;span data-hello-target=&quot;output&quot;&gt;
+  &lt;/span&gt;
+&lt;/div&gt;
+          </code></pre>
+        </section>
+        <section>
+          <h2>
+            JS
+          </h2>
+          <pre><code class="javascript" data-trim>
+// hello_controller.js
+import { Controller } from &quot;stimulus&quot;
+
+export default class extends Controller {
+  static targets = [ &quot;name&quot;, &quot;output&quot; ]
+
+  greet() {
+    this.outputTarget.textContent =
+      `Hello, ${this.nameTarget.value}!`
+  }
+}
+          </code></pre>
+          <p class="fragment">JS можно присылать вместе в turbo-frame</p>
+        </section>
+        <section>
+          <p>
+            <a href="https://htmx.org/">htmx.org</a>
+          </p>
+          <img src="./img/htmx.png" alt="">
+        </section>
+        <section>
+          <p>
+            Недостатки
+          </p>
+          <ul>
+            <li class="fragment">Не для больших компаний</li>
+            <li class="fragment">Не для оптимистов</li>
+            <li class="fragment">Сложные интерфесы с валидацией</li>
+            <li class="fragment">Нагрузка на сервера</li>
+          </ul>
+        </section>
+        <section>
+          Подходит для небольших петпроектов
+        </section>
+        <section data-background="#0f0f0f">
+          <h2>
+            4. Выводы
+          </h2>
+        </section>
+        <section>
+          <ul>
+            <li>Иногда технологии ведут не туда</li>
+            <li class="fragment">Мир намного больше чем React/Angular/Vue/Svelte</li>
+            <li class="fragment">HTML first подходит для средних проектов</li>
+            <li class="fragment">HTML first &mdash; cпасение для бэкендеров</li>
+          </ul>
+        </section>
+                <section>
+          <h2>Время вопросов</h2>
+          <table>
+            <tr>
+              <td style="vertical-align: middle">
+                
+              </td>
+              <td style="vertical-align: middle">
+                Золотых Алексей
+                <br>
+                  @zolotyh
+                <br>
+                  Github | Telegram | Twitter
+              </td>
+            </tr>
+          </table>
+        </section>
+      </div>
+    </div>
+    <script src="dist/reveal.js"></script>
+    <script src="plugin/notes/notes.js"></script>
+    <script src="plugin/markdown/markdown.js"></script>
+    <script src="plugin/highlight/highlight.js"></script>
+    <script>
+      // More info about initialization & config:://revealjs.com/config/
+      Reveal.initialize({
+        hash: true,
+        slideNumber: true,
+        backgroundTransition: 'none',
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes],
+      });
+    </script>
+  </body>
+</html>
