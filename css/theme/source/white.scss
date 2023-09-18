@@ -13,7 +13,7 @@
 @import url(./fonts/source-sans-pro/source-sans-pro.css);
 @import url(./fonts/work/stylesheet.css);
 // Override theme settings (see ../template/settings.scss)
-$backgroundColor: #fff;
+$backgroundColor: #eaeaea;
 
 $mainColor: rgb(68, 64, 60);
 $headingColor: rgb(68, 64, 60);
@@ -24,8 +24,8 @@ $headingFont: "Yanone Kaffeesatz", Helvetica, sans-serif;
 $headingTextShadow: none;
 $headingLetterSpacing: normal;
 $headingTextTransform: uppercase;
-$headingFontWeight: 200;
-$linkColor: #2488e3;
+$headingFontWeight: 400;
+$linkColor: #e30300;
 $linkColorHover: lighten($linkColor, 15%);
 $selectionBackgroundColor: lighten($linkColor, 25%);
 
